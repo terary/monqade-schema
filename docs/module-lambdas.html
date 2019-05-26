@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      lambdas - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  
+  <link type="text/css" rel="stylesheet" href="styles/collapse.css">
+  
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      Monqade Schema
+    </h3>
+
+    
+      <h3>
+        Resources
+      </h3>
+      
+        <a href="https://www.google.com/">google</a>
+      
+        <a href="https://mongoosejs.com/docs/guide.html">mongoose</a>
+      
+        <a href="https://www.mongodb.com/">mongoDB</a>
+      
+    
+
+    <h3>Related Docs</h3><ul><li id="MonqadePath-nav"><a href="tutorial-MonqadePath.html">MonqadePath</a></li><li id="MonqadeSchemaExample-nav"><a href="tutorial-MonqadeSchemaExample.html">MonqadeSchemaExample</a></li><li id="overview-nav"><a href="tutorial-overview.html">Tutorial Two</a></li></ul><h3>Classes</h3><ul><li id="MonqadeSchema-nav"><a href="MonqadeSchema.html">MonqadeSchema</a><ul class='methods'><li data-type="method" id="MonqadeSchema-createTestDocumentForInsert-nav"><a href="MonqadeSchema.html#createTestDocumentForInsert">createTestDocumentForInsert</a></li><li data-type="method" id="MonqadeSchema-createTestDocumentForUpdatable-nav"><a href="MonqadeSchema.html#createTestDocumentForUpdatable">createTestDocumentForUpdatable</a></li><li data-type="method" id="MonqadeSchema-doDeleteOne-nav"><a href="MonqadeSchema.html#doDeleteOne">doDeleteOne</a></li><li data-type="method" id="MonqadeSchema-doFindMany-nav"><a href="MonqadeSchema.html#doFindMany">doFindMany</a></li><li data-type="method" id="MonqadeSchema-doFindOne-nav"><a href="MonqadeSchema.html#doFindOne">doFindOne</a></li><li data-type="method" id="MonqadeSchema-doInsertOne-nav"><a href="MonqadeSchema.html#doInsertOne">doInsertOne</a></li><li data-type="method" id="MonqadeSchema-doQueryMany-nav"><a href="MonqadeSchema.html#doQueryMany">doQueryMany</a></li><li data-type="method" id="MonqadeSchema-doUpdateOne-nav"><a href="MonqadeSchema.html#doUpdateOne">doUpdateOne</a></li><li data-type="method" id="MonqadeSchema-getMongooseModelClass-nav"><a href="MonqadeSchema.html#getMongooseModelClass">getMongooseModelClass</a></li><li data-type="method" id="MonqadeSchema-getPathNamesAll-nav"><a href="MonqadeSchema.html#getPathNamesAll">getPathNamesAll</a></li><li data-type="method" id="MonqadeSchema-getPathNamesQuery-nav"><a href="MonqadeSchema.html#getPathNamesQuery">getPathNamesQuery</a></li><li data-type="method" id="MonqadeSchema-getPathOptions-nav"><a href="MonqadeSchema.html#getPathOptions">getPathOptions</a></li><li data-type="method" id="MonqadeSchema-getSearchablePathNamesWithTypes-nav"><a href="MonqadeSchema.html#getSearchablePathNamesWithTypes">getSearchablePathNamesWithTypes</a></li></ul></li><li id="MonqadeSchemaPrivate-nav"><a href="MonqadeSchemaPrivate.html">MonqadeSchemaPrivate</a><ul class='methods'><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_createTestRecord-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_createTestRecord">MonqadeSchema#_createTestRecord</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_getPathOptions-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_getPathOptions">MonqadeSchema#_getPathOptions</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_hasValidSystemFields-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_hasValidSystemFields">MonqadeSchema#_hasValidSystemFields</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_inflateProjection-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_inflateProjection">MonqadeSchema#_inflateProjection</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_isValidSearchValue-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_isValidSearchValue">MonqadeSchema#_isValidSearchValue</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchema#_promiseToFindMany-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchema#_promiseToFindMany">MonqadeSchema#_promiseToFindMany</a></li><li data-type="method" id="MonqadeSchemaPrivate-MonqadeSchemaWithPathAdapter#_getPathNamesByProperty-nav"><a href="MonqadeSchemaPrivate.html#.MonqadeSchemaWithPathAdapter#_getPathNamesByProperty">MonqadeSchemaWithPathAdapter#_getPathNamesByProperty</a></li></ul></li><li id="MonqadeSchemaWithPathAdapter-nav"><a href="MonqadeSchemaWithPathAdapter.html">MonqadeSchemaWithPathAdapter</a><ul class='methods'><li data-type="method" id="MonqadeSchemaWithPathAdapter-createTestDocumentForInsert-nav"><a href="MonqadeSchemaWithPathAdapter.html#createTestDocumentForInsert">createTestDocumentForInsert</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-createTestDocumentForUpdatable-nav"><a href="MonqadeSchemaWithPathAdapter.html#createTestDocumentForUpdatable">createTestDocumentForUpdatable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doDeleteOne-nav"><a href="MonqadeSchemaWithPathAdapter.html#doDeleteOne">doDeleteOne</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doFindMany-nav"><a href="MonqadeSchemaWithPathAdapter.html#doFindMany">doFindMany</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doFindOne-nav"><a href="MonqadeSchemaWithPathAdapter.html#doFindOne">doFindOne</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doInsertOne-nav"><a href="MonqadeSchemaWithPathAdapter.html#doInsertOne">doInsertOne</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doQueryMany-nav"><a href="MonqadeSchemaWithPathAdapter.html#doQueryMany">doQueryMany</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-doUpdateOne-nav"><a href="MonqadeSchemaWithPathAdapter.html#doUpdateOne">doUpdateOne</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getMongooseModelClass-nav"><a href="MonqadeSchemaWithPathAdapter.html#getMongooseModelClass">getMongooseModelClass</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesAll-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesAll">getPathNamesAll</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesInsertable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesInsertable">getPathNamesInsertable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesNonInsertable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesNonInsertable">getPathNamesNonInsertable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesNonProjectable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesNonProjectable">getPathNamesNonProjectable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesNonRequired-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesNonRequired">getPathNamesNonRequired</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesNonSearchable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesNonSearchable">getPathNamesNonSearchable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesNonUpdatable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesNonUpdatable">getPathNamesNonUpdatable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesProjectable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesProjectable">getPathNamesProjectable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesQuery-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesQuery">getPathNamesQuery</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesRequired-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesRequired">getPathNamesRequired</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesSearchable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesSearchable">getPathNamesSearchable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesSystem-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesSystem">getPathNamesSystem</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathNamesUpdatable-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathNamesUpdatable">getPathNamesUpdatable</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getPathOptions-nav"><a href="MonqadeSchemaWithPathAdapter.html#getPathOptions">getPathOptions</a></li><li data-type="method" id="MonqadeSchemaWithPathAdapter-getSearchablePathNamesWithTypes-nav"><a href="MonqadeSchemaWithPathAdapter.html#getSearchablePathNamesWithTypes">getSearchablePathNamesWithTypes</a></li></ul></li></ul><h3>Modules</h3><ul><li id="lambdas-nav"><a href="module-lambdas.html">lambdas</a><ul class='methods'><li data-type="method" id="lambdas-arrayFrom_A_minus_B-nav"><a href="module-lambdas.html#.arrayFrom_A_minus_B">arrayFrom_A_minus_B</a></li><li data-type="method" id="lambdas-isObject-nav"><a href="module-lambdas.html#.isObject">isObject</a></li><li data-type="method" id="lambdas-isValidMongoID-nav"><a href="module-lambdas.html#.isValidMongoID">isValidMongoID</a></li><li data-type="method" id="lambdas-minMax-nav"><a href="module-lambdas.html#.minMax">minMax</a></li><li data-type="method" id="lambdas-MonqadeSchema.isTrustedQueryBuilder-nav"><a href="module-lambdas.html#.MonqadeSchema.isTrustedQueryBuilder">MonqadeSchema.isTrustedQueryBuilder</a></li><li data-type="method" id="lambdas-objectFromArrayOfKeys-nav"><a href="module-lambdas.html#.objectFromArrayOfKeys">objectFromArrayOfKeys</a></li><li data-type="method" id="lambdas-objectIsSubset-nav"><a href="module-lambdas.html#.objectIsSubset">objectIsSubset</a></li><li data-type="method" id="lambdas-subDocumentOfPaths-nav"><a href="module-lambdas.html#.subDocumentOfPaths">subDocumentOfPaths</a></li></ul></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        lambdas
+      </h1>
+    
+
+    
+
+<section>
+  <header>
+    
+      
+        
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+          <div class="description">
+            <p>Contains utility functions.</p>
+          </div>
+        
+
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line1">line 1</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+
+<h4 class="name" id="~lambdas">
+  <span class="type-signature">(inner, constant) </span>lambdas<span class="type-signature"></span>
+</h4>
+
+
+
+
+  <div class="description">
+    <p>Useful helper functions.</p>
+  </div>
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line50">line 50</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+          
+        
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.arrayFrom_A_minus_B">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".arrayFrom_A_minus_B">
+      <span class="type-signature">(static) </span>arrayFrom_A_minus_B<span class="signature">(A, B)</span><span class="type-signature"> &rarr; {array}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns array of elements that exist in A but not in B.  (A-B) </p>
+<p>Only tested with simple elements.</p>
+<p><strong>returns</strong>  array of elements that exist in A but not in B</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>A</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>array of elements</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>B</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>array of elements</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line180">line 180</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#arrayFrom_A_minus_B-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="arrayFrom_A_minus_B-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>.arrayFrom_A_minus_B([1,2,3,4],[3,4,5,6]) -> [1,2]</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.isObject">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".isObject">
+      <span class="type-signature">(static) </span>isObject<span class="signature">(thingy)</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Determine if thingy is an object</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>thingy</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>test subject</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line235">line 235</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#isObject-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="isObject-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>.isObject(number) -> false;    
+.isObject(array) -> false; //natively array is an object    
+.isObject(string) -> false;    
+.isObject(date) -> false;    
+.isObject(undef) -> false;    
+.isObject(null) -> false;    
+.isObject({}) -> true;    
+**returns** Boolean - true if thingy is an real object</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.isValidMongoID">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".isValidMongoID">
+      <span class="type-signature">(static) </span>isValidMongoID<span class="signature">(ID)</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Test the 'ID' to assure it looks like it could be a mongoDB ID </p>
+<p><strong>returns</strong>  true if 'ID' is 24 characters  and hex.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>ID</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      String
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>string that to test if it looks like mongoDB id</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line211">line 211</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.minMax">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".minMax">
+      <span class="type-signature">(static) </span>minMax<span class="signature">(&hellip;values)</span><span class="type-signature"> &rarr; {object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>minMax() -&gt; {min: Infinity, max: -Infinity}</p>
+<p> minMax(0,2,3,-1)-&gt; { min: -1, max: 3}</p>
+<p> minMax(new Date('1974-06-29'),new Date('2018-06-29')) -&gt; { min: 141696000000, max: 1530230400000 }</p>
+<p>minMax('apple','banana') -&gt; {min: NaN, max: NaN}</p>
+<p><strong>returns</strong> {min:..., max:...}</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>values</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      any
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+              &lt;repeatable><br>
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>any number of values</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line76">line 76</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.MonqadeSchema.isTrustedQueryBuilder">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".MonqadeSchema.isTrustedQueryBuilder">
+      <span class="type-signature">(static) </span>MonqadeSchema.isTrustedQueryBuilder<span class="signature">(qb)</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p><em>Monqade.doQueryMany()</em> - allows for third party query builders 
+to construct the search criteria for a 'find(searchCriteria,...)' call.</p>
+<p>.doQueryMany() will use both 'toFindObject()' and 'termCount()'
+for it's purposes.</p>
+<p><strong>termCount()</strong> -&gt; number of search terms</p>
+<p><strong>toFindObject()</strong> -&gt;  some valid search expression:</p>
+<p>search expression like:  {pathID:{$and:{$gt:x,$lt:y}}  - Appropriate
+'findCriteria' for mongoose/mongoDB  </p>
+<p><strong>returns</strong> Boolean - true qb implements 'termCount' and 'toFindObject'</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>qb</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>test subject</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="MonqadeSchema.js.html">MonqadeSchema.js</a>, <a href="MonqadeSchema.js.html#line714">line 714</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.objectFromArrayOfKeys">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".objectFromArrayOfKeys">
+      <span class="type-signature">(static) </span>objectFromArrayOfKeys<span class="signature">(keyArray, initValue)</span><span class="type-signature"> &rarr; {object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Create an object from the array of keys setting each key to initial value<br><strong>returns</strong> {key:initialValue}</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>keyArray</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;string>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>keys to be used.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>initValue</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      any
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>initial value</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line134">line 134</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#objectFromArrayOfKeys-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="objectFromArrayOfKeys-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>.objectFromArrayOfKeys(['k1','k2','k3'],'some value') -> {
+     k1:'some value'
+     k2:'some value'
+     k3:'some value'
+ } </code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.objectIsSubset">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".objectIsSubset">
+      <span class="type-signature">(static) </span>objectIsSubset<span class="signature">(aSubset, aSuperset)</span><span class="type-signature"> &rarr; {Boolean}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Determine if aSubset object exists in aSueperset object</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>aSubset</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>subset object</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>aSuperset</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>super-set object</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line160">line 160</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#objectIsSubset-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="objectIsSubset-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>.objectIsSubset(A,B) 
+A:{} B:{} --> true
+A:{"a":1,"b":2} B:{"a":1,"b":2} --> true
+A:{"a":1,"b":2} B:{"b":2} --> false
+A:{"b":2} B:{"a":1,"b":2} --> true
+A:{"a":1,"b":2} B:{"A":1,"B":2} --> false
+A:{"a":1,"b":2} B:{"b":2,"a":1} --> true
+A:{"a":1,"b":{"b1":2}} B:{"a":1,"b":{"b1":"2"}} --> false
+A:{"a":1,"b":{"b1":"2"}} B:{"a":1,"b":{"b1":"2"}} --> true
+A:{"a":1,"b":{"b1":"2","b2":"fish"}} B:{"a":1,"b":{"b1":"2","b2":"fish"}} --> true
+A:{"a":1,"b":{"b2":{"b2a":"fish"},"b1":"2"}} B:{"a":1,"b":{"b1":"2","b2":{"b2a":"fish"}}} --> true
+**returns** Boolean - true if aSubset exists aSuperset, false otherwise</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#.subDocumentOfPaths">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id=".subDocumentOfPaths">
+      <span class="type-signature">(static) </span>subDocumentOfPaths<span class="signature">(doc, pathIDs)</span><span class="type-signature"> &rarr; {JSON}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>pathIDs not in the JSON ( or undefined) will be removed.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>doc</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      JSON
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>container document</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>pathIDs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;string>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>pathIDs to extract from the JSON,</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="monqade-shared-src_lambdas.js.html">monqade-shared-src/lambdas.js</a>, <a href="monqade-shared-src_lambdas.js.html#line111">line 111</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#subDocumentOfPaths-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="subDocumentOfPaths-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>const subDocument = {
+     subkey1:'subkey',
+     subkey2:[1,2,3],
+     subkey3:{
+         subsubkey1:'a sub subkey',
+         subsubkey1:[1,2,3],
+         subsubkey1:new Date()
+     }
+ };
+ const superDocument = {
+     key1:'some key',
+     key2:subDocument,
+     key3:'three',
+     key4:['a','b','c']
+ }
+ 
+.subDocumentOfPaths(superDocument,['key1','key3']) -> {key1:'some key',key3:'three'}
+.subDocumentOfPaths(superDocument,['key2','key4']) -> {key2:subDocument,key4:['a','b','c']}
+.subDocumentOfPaths(superDocument,['subkey1']) -> {}
+.subDocumentOfPaths(superDocument,['nonKey']) -> {}</code></pre>
+
+
+  </div>
+
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+
+</body>
+</html>

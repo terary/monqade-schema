@@ -1,0 +1,34 @@
+{
+  "name": "monqade-schema",
+  "version": "1.0.0",
+  "description": "Mongoose Facade for simple easy CRUD opperations.  Assists in enforcing business logic",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.4.0",
+    "monqade-shared": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-shared.git"
+  },
+  "devDependencies": {
+    "md5": "^2.2.1",
+    "mocha": "^5.2.0",
+    "monqade-query-builder": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/query-builder.git",
+    "tmc-debug-function-timer": "^1.0.1"
+  },
+  "scripts": {
+    "testX": "mocha",
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
+    "test": "MONQADE_ENV=test mocha --timeout 5000 test/controller.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-schema.git"
+  },
+  "author": "Terary",
+  "license": "ISC"
+}

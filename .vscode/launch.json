@@ -1,0 +1,78 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Mocha (Test single file)",
+            "type": "node",
+            "request": "launch",
+            "env": {"MONQADE_ENV":"testing"},
+            "runtimeArgs": [
+              "${workspaceRoot}/node_modules/.bin/mocha",
+              "--inspect-brk",
+              "./test/controller.test.js",
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "port": 9229
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Replica ",
+            "program": "${workspaceFolder}/dev-goof/replicaSet.js"
+        },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "goof Server ",
+            "program": "${workspaceFolder}/dev-goof/goofSrv.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof FindOne ",
+            "program": "${workspaceFolder}/dev-goof/goofFindOne.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof FindMany ",
+            "program": "${workspaceFolder}/dev-goof/goofQueryMany.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof FindMany ",
+            "program": "${workspaceFolder}/dev-goof/goofFindMany.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof  ",
+            "program": "${workspaceFolder}/dev-goof/goof.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof 2",
+            "program": "${workspaceFolder}/dev-goof/goof2.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof update ",
+            "program": "${workspaceFolder}/dev-goof/goofUpdate.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "goof insert ",
+            "program": "${workspaceFolder}/dev-goof/goofInsert.js"
+        }
+
+    ]
+}

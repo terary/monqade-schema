@@ -1,0 +1,312 @@
+<html>
+    <head>
+        <title>Overview</title>
+        <style>
+        td{
+            padding-left:15px;
+            padding-right:15px;
+            text-align:center;
+        }
+        .bold{
+            font-weight:bold;
+        }
+        h4{
+            color:#3e3c42;
+        }
+        .schemaProperty{
+            background:#e7e9db;
+            color: #4f424c;
+            padding: 0.5em;
+            margin:1em;
+        }
+        </style>
+    </head>
+    <body>
+        <p>
+            <span class='bold'>There is no class 'MonqadePath'</span> it is an informal extension to 
+            {@link https://mongoosejs.com/docs/schematypes.html Mongoose.SchemaType}. When defining the schemaType
+            simply add the additional properties.
+            
+            <pre><code>
+        [pathName]: {
+            name: [pathName same as key to this object],
+            type: [standard mongoose type],
+            isSearchable: [true|false],
+            isProjectable: [true|false],
+            isUpdatable: [true|false],
+            isInsertable: [true|false],
+            isRequired: [true|false],
+            makeTestData: [function to create test data],
+            notes: {
+                purpose: 'natural language' ,
+                restriction: 'natural language'
+            }
+        };</code></pre>
+        </p>
+        <p>
+            MonqadePath is a few properties appended to Mongoose.schema.paths[pathName].options<br />
+            These properties include:
+            <ul>
+                <li><a href='#isUpdatable'>isUpdatable</a>: boolean</li>
+                <li><a href='#isInsertable'>isInsertable</a> : boolean</li>
+                <li><a href='#isSearchable'>isSearchable</a>: boolean</li>
+                <li><a href='#isProjectable'>isProjectable</a>: boolean</li>
+                <li><a href='#isRequired'>isRequired</a>: boolean</li>
+                <li><a href='#isSystem'>isSystem</a>: boolean</li>
+                <li><a href='#makeTestData'>makeTestData</a>: function() </li>
+                <li><a href='#notes'>notes</a>:{purpose:..., restriction:...}</li>
+            </ul>.
+        </p>
+        <div class='schemaProperty'>
+            <a name="isUpdatable"></a> 
+            <h4>isUpdatable</h4>
+            Determines if the path will be read-in by .doUpdateOne(...)<br />
+            <p>
+            Monqade assumes all pre-existing documents with pre-exisiting path meet the requirements specified in the schema. 
+            <br /><br />
+            Basically, Monqade does not attempt to implement the is[Property] retroactively.  All pre-existing documents should
+            be made to meet the specification outlined within the schema.. 
+            
+            </p>
+
+        </div>
+        <div class='schemaProperty'>
+            <a name="isInsertable"></a> 
+            <h4>isInsertable</h4>
+                Determines if the path will be read-in by .doInsertOne(...)
+                <table>
+                    <tr>
+                            <th>
+                                isInsertable
+                            </th>
+                            <th>
+                                default
+                            </th>
+                            <th>
+                                required
+                            </th>
+                            <th>
+                                comments
+                            </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            true
+                        </td>
+                        <td>
+                            true    
+                        </td>                            
+                        <td>
+                            true    
+                        </td>                            
+                        <td>
+                            No issues
+                        </td>
+                        </tr>
+                    <tr>
+                            <td>
+                                    true
+                            </td>
+                            <td>
+                            true    
+                        </td>                            
+                        <td>
+                            false
+                        </td>                            
+                        <td>
+                            No issues
+                        </td>
+                        </tr>
+                    <tr>
+                        <td>
+                            true
+                        </td>
+                        <td>
+                            false    
+                        </td>                            
+                        <td>
+                            true
+                        </td>                            
+                        <td>
+                            Logically sound.<br />
+                            Empty values my result in end-user errors
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            true
+                        </td>
+                        <td>
+                            false    
+                        </td>                            
+                        <td>
+                            false
+                        </td>
+                        <td>
+                            Logically sound.<br />
+                            Default values encouraged.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                                false
+                            </td>
+                        <td>
+                            true    
+                        </td>                            
+                        <td>
+                            true    
+                        </td>                            
+                        <td>
+                                No issues
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                    false
+                            </td>
+                            <td>
+                                true    
+                            </td>
+                        <td>
+                                false                            
+                        </td>                            
+                        <td>
+                            No issue, required is implicit.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                                false
+                            </td>
+                        <td>
+                            false    
+                        </td>                            
+                        <td>
+                            true
+                        </td>                            
+                        <td>
+                            <span style='color:red'>Issue</span><br />
+                             Code will need to populate. 
+                             <br />This is same logic for systemPaths.
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            false
+                        </td>
+                        <td>
+                            false    
+                        </td>                            
+                        <td>
+                            false
+                        </td>
+                        <td>
+                                No issues
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+            <div class='schemaProperty'>
+                <a name="isSearchable"></a> 
+                <h4>isSearchable</h4>
+                if<code> MonqadeSchema.useRestrictiveSearch=true</code> (default)  MonqadeSchema prevents this
+                field from becoming search criteria.<br /><br />
+                
+                This can be useful for preventing searches for sensitive data or 
+                full dataset.  Eg: {emails :RegEx(/@/)}<br /><br />
+                Not full-proof security or even secure - but useful.
+
+            </div>
+            <div class='schemaProperty'>
+                <a name="isProjectable"></a> 
+                <h4>isProjectable</h4>
+                If set false MonqadeSchema will prevent this path from becoming an output field/column.
+                <br /><br />
+                Default projections: The paths that <code>isProjectable=true</code> + paths that are <code>isSystem=true</code>
+                <br /> Projections can also be any subset of paths that are <code>isProjectable=true</code>
+                <br /><br />
+                At the time of this writing the isProjectable property applies only to doFindMany()
+                and doQueryMany()... All other <code>do[Method]One(...)</code> return full data (exception being <code>doDeleteOne</code>).
+        </div>
+        <div class='schemaProperty'>
+
+                <a name="isRequired"></a> 
+                <h4>isRequired</h4>
+                Pseudo-alias for 'require'<br /><br />
+                effective required:<br />
+                <code>required= required && isRequired</code>
+                <br /><br />
+                <table>
+                    <thead>
+                        <tr>
+                            <td>isRequired</td>
+                            <td>required</td>
+                            <td>path will be</td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>true</td>
+                        <td>true</td>
+                        <td>required</td>
+                    </tr>
+                    <tr>
+                        <td>true</td>
+                        <td>false</td>
+                        <td>required</td>
+                    </tr>
+                    <tr>
+                        <td>false</td>
+                        <td>true</td>
+                        <td>required</td>
+                    </tr>
+                    <tr>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>not required</td>
+                    </tr>
+                </table>
+                *pseudo alias: meaning the underlying 'required' field is authoritative and Mongoose/Mongo use it.  Monqade, implements
+                isRequired to fit the is[Property] pattern and sets 'required' accord to the above logic.    
+        </div>
+        <div class='schemaProperty'>
+
+                <a name="isSystem"></a> 
+                <h4>isSystem</h4>
+                This a derived or virtual. These are fields that:<br />
+                <ol>
+                    <li>Added by Mongo</li>
+                    <li>Required by Monqade</il>
+                </ol>
+                All isSystem paths are required for update/delete.
+                </div>
+        <div class='schemaProperty'>
+
+            <a name="makeTestData"></a> 
+            <h4>makeTestData</h4>
+            <code>
+                makeTestData: ()=>{return /*something random and datatype appropriate*/}
+            </code>
+            <br />
+            This is called when creating test records. This should create data sufficiently random to be useful.  
+        </div>
+        <div class='schemaProperty'>
+
+            <a name="notes"></a> 
+            <h4>notes</h4>
+            <pre><code>
+            notes: {
+                "purpose": "[what is the purpose of this path]",
+                "restriction": "[implemented constrains - minimum length 3 characters, not before today, etc]"
+              }
+            </code></pre>
+            <br />
+            This is used for documentation of the schema. Not only in the schema definition but also auto generating API documentation.
+            <br /><br />
+            Both purpose and restriction should be natural language.
+        </div>
+    </body>
+
+</html>
