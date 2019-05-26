@@ -10,17 +10,17 @@
 * [PHP 5.4.0 or higher](http://www.php.net/)
 
 ## Developer Documentation ##
-http://developers.google.com/api-client-library/php
+http://terarychambers.com/docs/monqade/monqade-schema/
+
+## Git Repo ##
+https://github.com/terary/monqade-schema
 
 ## Installation ##
 
+```npm install monqade-schema```
 
 ### Download the Release
 
-
-```php
-require_once '/path/to/google-api-php-client/vendor/autoload.php';
-```
 
 
 ## Examples ##
@@ -73,3 +73,5 @@ To automatically fix (fixable) coding style violations, run
 ```
 vendor/bin/phpcbf src --standard=style/ruleset.xml
 ```
+### Contributors ###
+T. Chambers
