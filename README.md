@@ -75,3 +75,10 @@ vendor/bin/phpcbf src --standard=style/ruleset.xml
 ```
 ### Contributors ###
 T. Chambers
+
+### Purpose ###
+Promote uniform document structure
+Reduce app development time
+Enforce business logic
+Use mongo/ose for flexibility - to color outide of the lines
+use Monqade - to stay within the lines.

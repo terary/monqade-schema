@@ -74,13 +74,13 @@ describe("Monqade Schema Tests", function () {
 
 
     const skipTest = true;
-    // importTest(".doInsertOne", './partials/doInsertOne.js',   ! skipTest) ;
-    // importTest(".doUpsertOne", './partials/doUpsertOne.js', !  skipTest);
-    // importTest(".doUpdateOne", './partials/doUpdateOne.js', !  skipTest);
-    // importTest(".doFindOne", './partials/doFindOne.js', ! skipTest);
-    // importTest(".doDeleteOne", './partials/doDeleteOne.js', ! skipTest);
+    importTest(".doInsertOne", './partials/doInsertOne.js',   ! skipTest) ;
+    importTest(".doUpsertOne", './partials/doUpsertOne.js', !  skipTest);
+    importTest(".doUpdateOne", './partials/doUpdateOne.js', !  skipTest);
+    importTest(".doFindOne", './partials/doFindOne.js', ! skipTest);
+    importTest(".doDeleteOne", './partials/doDeleteOne.js', ! skipTest);
     importTest(".doFindMany", './partials/doFindMany.js', !  skipTest);
-    // importTest(".doQueryMany", './partials/doQueryMany.js', ! skipTest);
+    importTest(".doQueryMany", './partials/doQueryMany.js', ! skipTest);
     importTest("unit", './partials/unit.js', ! skipTest);
 
 

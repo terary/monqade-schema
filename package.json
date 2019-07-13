@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "chai": "^4.2.0",
-    "lodash": "^4.17.11",
-    "mongoose": "^5.4.0",
+    "lodash": "^4.17.14",
+    "mongoose": "^5.6.4",
     "monqade-shared": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-shared.git"
   },
   "devDependencies": {

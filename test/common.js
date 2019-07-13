@@ -32,7 +32,14 @@ CommonTestDependencies.testRecordSet = [] ; // to be filled in controller - or r
 CommonTestDependencies.theMqSchema = {};  // to be instantiated after mongoose connection 
 
 //MqSchema Class
-CommonTestDependencies.MonqadeSchemaWithPathAdapter =MonqadeSchemaWithPathAdapter ;
+// CommonTestDependencies.MonqadeSchemaWithPathAdapter =MonqadeSchemaWithPathAdapter ;
+CommonTestDependencies.MonqadeSchemaWithPathAdapter = require('../src/index'); // MonqadeSchemaWithPathAdapter ;
+console.log(` phasing out 'MonqadeSchemaWithPathAdapter' it's become the default/only export  but alias as 'MonqadeSchema' `)
+// userSchema = new CommonTestDependencies.MonqadeSchemaWithPathAdapter(schemaDefinition.paths,
+//     schemaDefinition.options,
+//     mongoose);
+//     const  MqSchemaSchema = require('../src/index')
+
 
 //MqSchema definition - to be 'compiled' into an instance
 //CommonTestDependencies.schemaDefinition = MonqadeShared.schemaDefinitions.users;

@@ -1,0 +1,13 @@
+
+
+chaos schema
+simplified schema
+examples each operation
+
+MqSchemaConfigFromJSFile <-- hunt this down it's a validator of some sort, useful but not in this project
+
+merge all the pathNameHelpers
+
+sort/order by
+
+foreign key, ObjectID
