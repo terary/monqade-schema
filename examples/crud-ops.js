@@ -1,15 +1,15 @@
 "use strict";
 
-// const schemaDefinitions = require('monqade-dev-schemas').chaos;
-const schemaDefinitions = require('/mypart/tmc/my-node-modules/monqade/monqade-dev-schemas/schemas/chaos.mqschema.js');
+const schemaDefinitions = require('monqade-dev-schemas').chaos;
+// const schemaDefinitions = require('/mypart/tmc/my-node-modules/monqade/monqade-dev-schemas/schemas/chaos.mqschema.js');
 
 const mongoose = require('mongoose');
 //const enviro = require('../environments/env.development')
 const enviro = require('../environments/')
 const MqSchemaSchema = require('../src/index')
 
-const MonqadeResponse = require('../src/monqade-response');
-const MonqadeError = require('../src/monqade-error');
+const MonqadeResponse = require('monqade-shared').MonqadeResponse;
+const MonqadeError = require('monqade-shared').MonqadeError;
 
 /// -------------
 // const MonqadeShared = require('./monqade-shared.js'); 
