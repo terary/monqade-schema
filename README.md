@@ -3,7 +3,9 @@
 
   [![NPM Version][npm-image]][npm-url]
   [![MIT License][mitlicense-image]][mitlicense-url]
-
+  [![Linux Build][travis-image]][travis-url]
+  [![Windows Build][appveyor-image]][appveyor-url]
+  
 # Monqade Schema #
 
 ##### The Mongooose/MongoDB interface
