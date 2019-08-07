@@ -1,6 +1,6 @@
 {
   "name": "monqade-schema",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Mongoose Facade for simple easy CRUD operations.  Assists in enforcing business logic",
   "main": "index.js",
   "directories": {
@@ -43,6 +43,11 @@
     "type": "git",
     "url": "https://github.com/terary/monqade-schema.git"
   },
+  "keywords": [
+    "monqade",
+    "mongoose",
+    "schema"
+  ],
   "author": "Terary",
   "license": "MIT"
 }
