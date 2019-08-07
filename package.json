@@ -28,6 +28,7 @@
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "test": "mocha --timeout 5000 test/controller.test.js",
     "coverage": "nyc npm run test",
+    "cover": "istanbul cover _mocha",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "nyc": {
