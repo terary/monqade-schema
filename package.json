@@ -25,7 +25,9 @@
     "testX": "mocha",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "test": "mocha --timeout 5000 test/controller.test.js",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+
   },
   "nyc": {
     "include": "src",
