@@ -58,15 +58,14 @@ describe("MonqadeSchema Tests", function () {
 
 
     //done 
-    importTest(".doUpdateOne", './partials/doUpdateOne.js' );
-    importTest(".doInsertOne", './partials/doInsertOne.js' ) ;
-    importTest(".doDeleteOne", './partials/doDeleteOne.js' );
-    importTest(".doFindOne", './partials/doFindOne.js' );
-    importTest(".doUpsertOne", './partials/doUpsertOne.js');
+    // importTest(".doUpdateOne", './partials/doUpdateOne.js' );
+    // importTest(".doInsertOne", './partials/doInsertOne.js' ) ;
+    // importTest(".doDeleteOne", './partials/doDeleteOne.js' );
+    // importTest(".doFindOne", './partials/doFindOne.js' );
+    // importTest(".doUpsertOne", './partials/doUpsertOne.js');
     importTest(".doQueryMany", './partials/doQueryMany.js');
-
-    importTest(".properties", './partials/classMethodsProperties.js');
-    importTest(".doFindMany", './partials/doFindMany.js' );
+    // importTest(".properties", './partials/classMethodsProperties.js');
+    // importTest(".doFindMany", './partials/doFindMany.js' );
 
     
 
