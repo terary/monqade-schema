@@ -1,273 +1,437 @@
 "use strict";
+/* cSpell:ignore monqade */
 
-const  CommonTestDependencies = require("../common").CommonTestDependencies;
-const MonqadeResponse = CommonTestDependencies.MonqadeResponse;
-const MonqadeError = CommonTestDependencies.MonqadeError; 
-const resolvedAsExpected = CommonTestDependencies.resolvedAsExpected;
-const rejectedWithErrorCode = CommonTestDependencies.rejectedWithErrorCode;
-const skipThisTest = CommonTestDependencies.skipThisTest;
-const LAMBDAS = CommonTestDependencies.LAMBDAS;
-const fnTimer = require('tmc-debug-function-timer');
 const chai = require("chai");
 const expect = chai.expect;
 
+const CommonTestDependencies = require("../common");
+const mongoose = CommonTestDependencies.mongoose; 
+const resolvedAsExpected = CommonTestDependencies.resolvedAsExpected;
+const rejectedWithErrorCode = CommonTestDependencies.rejectedWithErrorCode;
+// const MonqadeResponse = CommonTestDependencies.MonqadeResponse ;
+// const MonqadeError = CommonTestDependencies.MonqadeError ;
+
+// this schema has a path unique restriction which effect the behaviour doUpserOne
+const foreignIDSchemaDef = require('monqade-dev-schemas').foreignKeys;
+
 let theMqSchema; //= CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
 let testRecordSet;// = CommonTestDependencies.testRecordSet;
+
+const buildDocCollection= (mqSchema,docCollection, count,done)=>{
+    const testRecord = mqSchema.createTestDocumentForInsert();
+    testRecord['foreign_unique_id'] = count +'.' + (new Date()/1) + '.' + Math.random();
+    mqSchema.doInsertOne(testRecord )
+        .then(newDoc => {
+            // testRecordSetCount++;
+            //CommonTestDependencies.testRecordSet.push(newDoc.documents.pop())
+            docCollection.push(newDoc.documents.pop());
+            if(docCollection.length < count){
+                buildDocCollection(mqSchema,docCollection, count,done);
+            }else {
+                done();
+            }
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+            // expect(MonqadeError.isThisOne(mqError)).to.be.true;
+            done(mqError);
+
+        }).catch(otherError => {
+            done(otherError);
+
+        });
+}
+
+
+
+const fidSchema = new CommonTestDependencies.MonqadeSchema(foreignIDSchemaDef.paths,
+    foreignIDSchemaDef.options,
+    CommonTestDependencies.mongoose);
 
 
 let uniqueForeignIDPathName = undefined;
 `Tests assume there is a a singular foreignID`
 
-let expectedUpdate= (controlDocument, mqResponse)=>{
-    resolvedAsExpected(mqResponse);
-    const subjectDoc = mqResponse._docs[0];
-    expect(subjectDoc['updatedAt']).not.to.equal(controlDocument['updatedAt'])
-    expect(subjectDoc['_id']).to.equal(controlDocument['_id'])
+// let expectedUpdate= (controlDocument, mqResponse)=>{
+//     resolvedAsExpected(mqResponse);
+//     const subjectDoc = mqResponse._docs[0];
+//     expect(subjectDoc['updatedAt']).not.to.equal(controlDocument['updatedAt'])
+//     expect(subjectDoc['_id']).to.equal(controlDocument['_id'])
 
-}
-let expectedInsert= ( mqResponse)=>{
-    resolvedAsExpected(mqResponse);
-    const subjectDoc = mqResponse._docs[0];
-    expect(subjectDoc['updatedAt']).to.equal(subjectDoc['createdAt'])
+// }
+// let expectedInsert= ( mqResponse)=>{
+//     resolvedAsExpected(mqResponse);
+//     const subjectDoc = mqResponse._docs[0];
+//     expect(subjectDoc['updatedAt']).to.equal(subjectDoc['createdAt'])
 
-}
+// }
 
-before(function(){
-    theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    testRecordSet = CommonTestDependencies.testRecordSet;
-    uniqueForeignIDPathName = theMqSchema.getPathNamesUniqueOption()[0]
-    if(!uniqueForeignIDPathName){
-        // title is already written to screen, this won't work
-        //this.test.parent.title = "valid only for schema with path that has 'unique' option... skipping" + this.title  
-        this.skip();
-
-    }
-
-})
-
-
-it("Should update if foreign ID exists - Control test, works as expected ", function (done) {
-    `
-        To observer a difference between createdAt and updatedAt - had to force lengthy delay.
-        Otherwise it seems to update in-place (or in process) the target document.
-        Confirmed by review the actual document in the collection.  Update happens - but updateAt=createdAt
-    `
-
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    testDoc[uniqueForeignIDPathName] = controlDoc[uniqueForeignIDPathName];
-
+describe('Schema with only mongoIDs', ()=>{
+    before(function(){
+        theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
+        testRecordSet = CommonTestDependencies.testRecordSet;
     
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
-            expectedUpdate(controlDoc,mqResponse)
-            done();
-    
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
- 
-it("Should insert if foreignID does not exist - Control test, works as expected ", function (done) {
-
-    const controlDoc =   testRecordSet.pop();
-    const insertDoc =theMqSchema.createTestDocument();
-    const testDoc = Object.assign({},controlDoc,insertDoc ); 
-
-    testDoc[uniqueForeignIDPathName] = Math.random() + (new Date()/1);
-    theMqSchema.getPathNamesSystem().forEach(pathID=>{
-        delete testDoc[pathID];
     })
-
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-            expectedInsert( mqResponse)
+    it(`Should resolve as expected when upsert'ing with matching systemPaths - (update) `, (done) => {
+        // const testData = testRecordSet.pop();
+        const testDoc = Object.assign({}, testRecordSet.pop() ,theMqSchema.createTestDocumentForUpdate())
+        theMqSchema.doUpsertOne(testDoc)
+        .then(mqResponse => { //MonqadeResponse
+            resolvedAsExpected(mqResponse);
             done();
     
-        }).catch(mqError=>{ //MonqadeError
+        }).catch(mqError => { //MonqadeError
             expect(mqError).to.be.null;
             done(mqError); 
 
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-it("Should update non-updatable (isUpdate=false) paths, unfortunate side-effect of upsert  ", function (done) {
+        }).catch(otherError => {
+            done(otherError)
 
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentWithPathIDs(theMqSchema.getPathNamesNonUpdatable());
-    theMqSchema.getPathNamesSystem().forEach(pathID=>{
-        delete updateDoc[pathID];
-    })
-
-    //    theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    testDoc[uniqueForeignIDPathName] = controlDoc[uniqueForeignIDPathName];
-
-    
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
-            expectedUpdate(controlDoc,mqResponse)
-            done();
-    
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-
-it("Should insert non-insertable (isInsertable=false) paths, unfortunate side-effect of upsert ", function (done) {
-
-    //const controlDoc =   testRecordSet.pop();
-    const insertDoc =theMqSchema.createTestDocumentWithPathIDs(theMqSchema.getPathNamesNonInsertable());
-    const testDoc = Object.assign({},insertDoc ); 
-
-    theMqSchema.getPathNamesSystem().forEach(pathID=>{
-        delete testDoc[pathID];
+        });
     });
-    if(Object.keys(testDoc).length==0){
-        skipThisTest.call(this,'No non-insertable paths defined in schema')
-    }
-
-    testDoc[uniqueForeignIDPathName] = Math.random() + (new Date()/1);
-
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-            expectedInsert( mqResponse)
-            done();
     
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-
-it("Should change document's foreignID. (new foreignID, same mongoDBID's) ", function (done) {
-    `
-    it('if both unique and system,  use system') 
-
-    systemIDs exist in db.  (new) foreignID unique identify does not exist.
-         -> uses systemID to effect change/update (not insert).
-
-    `    
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    testDoc[uniqueForeignIDPathName] = (new Date()/1) + Math.random();
-
-    
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
-            expectedUpdate(controlDoc,mqResponse)
-            done();
-    
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-it("Should update doc if systemID's IS supplied an foreignID NOT supplied ", function (done) {
-    `
-    it('if no-unique and system,  use system') 
-
-    systemIDs exist in db.   no supplied  foreignID unique identify .
-         -> uses systemID to effect change/update (not insert).
-
-    `    
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    delete testDoc[uniqueForeignIDPathName]; // = (new Date()/1) + Math.random();
-
-    
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
-            expectedUpdate(controlDoc,mqResponse)
-            done();
-    
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-it("Should update doc if systemID's NOT supplied but foreignID IS supplied ", function (done) {
-    `
-    it('if unique and no-system,  use unique') 
-
-    systemIDs exist in db.   no supplied  foreignID unique identify .
-         -> uses systemID to effect change/update (not insert).
-
-    `    
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    // delete testDoc[uniqueForeignIDPathName]; // = (new Date()/1) + Math.random();
-    theMqSchema.getPathNamesSystem().forEach(pathID=>{
-        delete testDoc[pathID];
-    })
-    testDoc[uniqueForeignIDPathName] =controlDoc[uniqueForeignIDPathName] ;
-    
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
-            expectedUpdate(controlDoc,mqResponse)
-            done();
-    
-        }).catch(mqError=>{ //MonqadeError
-            expect(mqError).to.be.null;
-            done(mqError); 
-
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
-});
-
-it("Should fail if systemID's NOT supplied and foreignID NOT supplied MonqadeError.code='MissingOrInvalidDocumentIDs' ", function (done) {
-    `
-    effectively -- forcing client code to use foreign key for upsert s
-        or rather - if using upsert.  foreignID (path unique=true,) will be required.
-    `    
-    const controlDoc =   testRecordSet.pop();
-    const updateDoc =theMqSchema.createTestDocumentForUpdatable();
-    const testDoc = Object.assign({},controlDoc,updateDoc ); 
-    // delete testDoc[uniqueForeignIDPathName]; // = (new Date()/1) + Math.random();
-    theMqSchema.getPathNamesSystem().forEach(pathID=>{
-        delete testDoc[pathID];
-    })
-    delete testDoc[uniqueForeignIDPathName]; //  =controlDoc[uniqueForeignIDPathName] ;
-    
-    theMqSchema.doUpsertOne(testDoc)
-        .then(mqResponse=>{ //MonqadeResponse
-    
+    it(`Should reject with 'MissingOrInvalidDocumentIDs' when upsert'ing without systemPaths (insert) `, (done) => {
+        
+        const testDoc =theMqSchema.createTestDocumentForInsert();
+        theMqSchema.doUpsertOne(testDoc)
+        .then(mqResponse => { //MonqadeResponse
             expect(mqResponse).to.be.null;
-            done(mqError); 
+            done();
     
-        }).catch(mqError=>{ //MonqadeError
+        }).catch(mqError => { //MonqadeError
+            rejectedWithErrorCode('MissingOrInvalidDocumentIDs',mqError);
+            done()
+    
+        }).catch(otherError => {
+            console.log("Caught Other Error:",otherError);
+        });
+    });
+
+    it("Should reject with 'EmptyCandidateDoc' when attempting to update with empty request (no updatable fields)", function (done) {
+        const testRecord =testRecordSet.pop()
+    
+        Object.keys(testRecord).forEach(pathID=>{
+            if(theMqSchema.getPathNamesSystem().indexOf(pathID) == -1 ){
+                delete testRecord[pathID]
+            }
+        })
+    
+        theMqSchema.doUpsertOne(testRecord)
+            .then(mqResponse => { //MonqadeResponse
+                expect(mqResponse).to.be.null;
+                done();
+        
+            }).catch(mqError => { //MonqadeError
+                rejectedWithErrorCode('EmptyCandidateDoc',mqError);
+                done();
+    
+            }).catch(unknownError =>{
+                done(unknownError);  // 
+            });
+    });
+    
+
+    it(`Should reject with 'MongooseOtherError' when attempting to update using unmatched _id, (original error indicates actual error)  `, ( done )=>{
+        // const testDoc = theMqSchema.createTestDocumentForInsert();
+        const corruptDoc =  testRecordSet.pop();
+        const testDoc2 =  testRecordSet.pop();
+        corruptDoc['_id'] = testDoc2['_id'];
+        theMqSchema.doUpsertOne(corruptDoc)
+        .then(mqResponse => { //MonqadeResponse
+            expect(mqResponse).to.be.null;
+            done();
+    
+        }).catch(mqError => { //MonqadeError
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+            expect(mqError._originalError.message).to.contain('duplicate')
+            done()
+    
+        }).catch(otherError => {
+            console.log("Caught Other Error:",otherError);
+            done()
+        })
+
+    });
+    it(`Should resolve as expected when upsert'ing new document with client generated  mongodb _id  .
+          ( unintended Insert?) 
+            With upsert its possible to generate _id and insert.
+            This may have unintended consequences (createdAt/updatedAt)
+
+            This maybe desirable for adding children documents
+            This maybe undesirable for any other reason?
+    
+        `, ( done )=>{
+
+        const corruptDoc =  testRecordSet.pop();
+        corruptDoc['_id'] =mongoose.Types.ObjectId();// '5c356d3aaa5f8f1022102f2f';
+        theMqSchema.doUpsertOne(corruptDoc)
+        .then(mqResponse => { //MonqadeResponse
+ 
+            resolvedAsExpected(mqResponse);
+            done();
+        }).catch(mqError => { //MonqadeError
+            expect(mqError).to.be.null    
+            done()
+    
+        }).catch(otherError => {
+            console.log("Caught Other Error:",otherError);
+            done(otherError)
+        })
+
+    });
+
+});
+describe('Schema with mongoIDs and some unique foreign id', ()=>{
+    const fidDocCollection = [];
+    before((done) =>{
+        buildDocCollection(fidSchema,fidDocCollection, 25,done);
+    })
+    it('Should update when *foreignID: matching*, *systemPaths: matching*', (done) => {
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+
+        // assure our test is doing what it supposed to be doing.
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.not.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+
+        });
+
+    });
+    it(`Should reject with 'MongooseOtherError' when *foreignID: matching*, *systemPaths: matching* schema version not matching`, (done) => {
+        const updateDoc = fidDocCollection.pop(); 
+        updateDoc['_schemaVersion'] = 'wrong_schema_key'
+        // assure our test is doing what it supposed to be doing.
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            expect(mqResponse).to.be.null;
+            done();
+        }).catch(mqError => {
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+            done();
+        }).catch(e=>{
+            done(e);
+        });
+
+    });
+    it(`Should reject with 'MongooseOtherError' when *foreignID: not present *, *systemPaths: matching* schema version not matching`, (done) => {
+        const updateDoc = fidDocCollection.pop(); 
+        delete updateDoc['foreign_unique_id'] ;
+        updateDoc['_schemaVersion'] = 'wrong_schema_key'
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            expect(mqResponse).to.be.null;
+            done();
+        }).catch(mqError => {
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+            done();
+        }).catch(e=>{
+            done(e);
+        });
+    });
+
+    it(`Should reject with 'MissingOrInvalidDocumentIDs' when *foreignID: match *, *systemPaths: not present* schema version not matching`, (done) => {
+        const updateDoc = fidDocCollection.pop(); 
+        delete updateDoc['foreign_unique_id'] ;
+        fidSchema.getPathNamesSystem().forEach(pathID => {
+            delete updateDoc[pathID];
+        })
+        // assure our test is doing what it supposed to be doing.
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            expect(mqResponse).to.be.null;
+            done();
+        }).catch(mqError => {
             rejectedWithErrorCode('MissingOrInvalidDocumentIDs',mqError);
             done();
+        }).catch(e=>{
+            done(e);
+        });
 
-        }).catch(unknownError=>{
-            done(unknownError);
-        })
+    });
+    it('Should update when *foreignID: not matching*, *systemPaths: matching* (changes foreignID)  ', (done)=>{
+        'If changing foreign ID is undesirable - mark it is isUpdatable=false'
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        updateDoc['foreign_unique_id'] = 'new id' + Math.random();
+        // assure our test is doing what it supposed to be doing.
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.not.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+            done();
+        });
+        
+    });
+    it(`Should reject with 'MongooseOtherError' *foreignID: matching*, *systemPaths: not matching*  `, (done) => {
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        
+        updateDoc['_id'] = mongoose.Types.ObjectId()
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            expect(mqResponse).to.be.null;
+            done();
+        }).catch(mqError => {
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+            done();
+        }).catch(e=>{
+            done(e);
+        });
+    });
+    it(`Should insert when  *foreignID: not matching*, *systemPaths: not matching*  `, (done) => {
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        
+        updateDoc['_id'] = mongoose.Types.ObjectId()
+        updateDoc['foreign_unique_id'] = 'new id' + Math.random();
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            //rejectedWithErrorCode('MongooseOtherError',mqError);
+            expect(mqError).to.be.null;
+            done(); 
+        });
+
+    });
+    it.skip(`Should insert when  *foreignID: not set*, *systemPaths: not matching*  `, (done) => {
+        `
+        First document with null as foreign ID - ok
+        subsequent document with null as foreign ID - error condition
+        `
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        
+        updateDoc['_id'] = mongoose.Types.ObjectId()
+        delete updateDoc['foreign_unique_id'];
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+
+            // expect(mqError).to.be.null;
+            done();
+        }).catch(e=>{
+            done(e);
+        });
+
+    });
+
+
+    it('Should update when *foreignID: matching*,  *systemPaths: not set*  ', (done) => { 
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        fidSchema.getPathNamesSystem().forEach(pathID=>{
+            delete updateDoc[pathID]
+        });
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.not.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+            done();
+        });
+    });
+    it('Should update when  *foreignID: not set*, *systemPaths:matching*', (done )=> {
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        delete updateDoc['foreign_unique_id'];
+        
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.not.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+            done();
+        });
+    });
+    it(`Should reject with 'MissingOrInvalidDocumentIDs' when  *foreignID: not present*  *systemPaths: not present*`, (done) => {
+        const changeData = fidSchema.createTestDocumentForUpdate();
+        const subjectDoc = fidDocCollection.pop();
+        const updateDoc = Object.assign({}, changeData, subjectDoc);
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        fidSchema.getPathNamesSystem().forEach(pathID=>{
+            delete updateDoc[pathID]
+        });
+        delete updateDoc['foreign_unique_id'];
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            expect(mqResponse).to.be.null;
+            done();
+        }).catch(mqError => {
+            rejectedWithErrorCode('MissingOrInvalidDocumentIDs',mqError);
+            done();
+        });
+    });
+
+    it(`Should insert when *foreignID: not matching*  *systemPaths: not present*`, (done) => {
+
+        const updateDoc = Object.assign({}, fidDocCollection.pop());
+        expect(updateDoc.createdAt).to.equal(updateDoc.updatedAt);
+        fidSchema.getPathNamesSystem().forEach(pathID=>{
+            delete updateDoc[pathID]
+        });
+        updateDoc['foreign_unique_id'] = 'some new key' + Math.random();
+
+        fidSchema.doUpsertOne( updateDoc)
+        .then(mqResponse => {
+            resolvedAsExpected(mqResponse);
+            const revisedDoc = mqResponse.documents.pop();
+            expect(revisedDoc.createdAt).to.equal(revisedDoc.updatedAt);
+            done()
+        }).catch(mqError => {
+            expect(mqError).to.be.null;
+            done();
+        });
+    });
 });

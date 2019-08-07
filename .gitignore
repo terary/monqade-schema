@@ -21,6 +21,9 @@ coverage/
 src/monqade-base-src 
 
 
+#queued to be deleted
+*.hidden
+
 #tricky git
 git-tmc
 git-github
@@ -31,6 +34,7 @@ jsdoc-braintree
 src-internal
 tutorial-raw
 build-doc.sh
+todo.txt
 
 #maintaining two gits - official git-hub and private git 
 git.sh 

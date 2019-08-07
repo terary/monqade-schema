@@ -1,45 +1,30 @@
+"use strict";
+if(process.env.HOSTNAME == 'terary-msi'){
+    module.exports= require('./env.test-dev');
 
-`
-To use:
-    launch.json:
-        "configurations": [
-            {
-                "type": "node",
-                "request": "launch",
-                "name": "index ",
-                "env": {"MONQADE_ENV":"testing"},
-                "program": "\${workspaceFolder}/index.js"
-            },  ...
+} else if(process.env.MONQADE_RUNTIME == 'travis') {
+    module.exports= require('./env.test-dev');
 
-    package.json:
-        "scripts": {
-            "test": "echo \"Error: no test specified\" && exit 1",
-            "doit": "MONQADE_ENV=test  node index.js"
-        },
-    command line:
-        MONQADE_ENV=test node script.js
+} else {
+    const env = require('./env.test-and-examples');
 
------
-const ENV = require('./environments');
-console.log(ENV['RUN_MODE'])
+    if(! env.MONGO_CONNECT_STRING  ){
+        console.log(`
+                **************   Tests and Examples  ************ 
+                A) ***Connection string need to be set in environments/env.test-and-examples.js ***
 
-`
+                B) Be advised for examples and test a single database will be used
+                with a few collections.  
 
-const RUN_MODE = process.env.MONQADE_ENV || 'PRODUCTION';
+                Database, collection and documents will persist. There is no
+                house cleaning, by design.
+                
+                Please select a database (or new database) specifically for 
+                examples and testing.
+        `);
+        process.exit(-1)
+    }
 
-switch(RUN_MODE.toUpperCase()){
-    case 'TESTING' :
-    case 'TEST' :
-        module.exports= require('./env.test');
-        break;
-
-    case 'DEV' :
-    case 'DEVELOPMENT' :
-        module.exports= require('./env.development');
-        break;
-
-    default :  // production
-        module.exports= require('./env.production');
-        break;
-
+    module.exports = env;
 }
+

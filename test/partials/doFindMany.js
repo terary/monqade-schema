@@ -1,56 +1,18 @@
-
-const CommonTestDependencies = require("../common").CommonTestDependencies;
-const MonqadeResponseSearch = CommonTestDependencies.MonqadeResponseSearch;
-const MonqadeError = CommonTestDependencies.MonqadeError; 
-
+"use strict";
+/* cSpell:ignore monqade */
 
 const chai = require("chai");
-expect = chai.expect;
+const expect = chai.expect;
+
+const CommonTestDependencies = require("../common");
+const MonqadeResponseSearch = CommonTestDependencies.MonqadeResponseSearch;
+const rejectedWithErrorCode = CommonTestDependencies.rejectedWithErrorCode;
+
 
 const limitOverride = {}; // 
 const useDefaultProjection = undefined;  //function sets to default if undefined.
 
-//mundane test outcome 
-const rejectedPromise = (p,expectedErrorCode,done)=>{
-    p.then(mqResponse=>{
-        expect(mqResponse).to.be.null;
-        done();
 
-    }).catch(mqError=>{
-        expect(mqError).to.not.be.null;
-        if( mqError.constructor.name !== 'MonqadeError' ){
-            throw(mqError);
-        }
-
-        expect(mqError).to.be.an.instanceof(MonqadeError);
-        expect(mqError.code).to.eq(expectedErrorCode);  
-        done();
-
-    }).catch(otherError=>{
-        done(otherError);
-
-    })
-}
-
-//mundane test outcome 
-const resolvedPromise = (p,expectedErrorCode,done)=>{
-    p.then(mqSearchResponse=>{
-        expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
-        done();
-
-    }).catch(mqError=>{
-        if(mqError && mqError.constructor.name !== 'MonqadeError' ){
-            throw(mqError);
-        }
-        expect(mqError).to.be.null;
-        done(); 
-
-    }).catch(otherError=>{
-        done(otherError);
-
-    })
-
-}
 
 const makeSearchCriteria = (testRecord,mqSchema)=>{
     const searchForPathID = mqSchema.getPathNamesSearchable().pop();
@@ -58,67 +20,99 @@ const makeSearchCriteria = (testRecord,mqSchema)=>{
 }
 
 
-const mundaneTestCases = [
-    //  this is schema specific  -- probably best to make 'mundane' tests normal tests
-    // {   
-    //     findObj: {'idxBucket':2},
-    //     desc:'Should resolve to MonqadeResponseSearch (control test-case, does as expected) ',
-    //     expectedTo:resolvedPromise,
-    //     respCode:'MonqadeResponseSearch'
-    // },
+describe('.doFindMany(findCriteria, projection, options) ', ( )=>{ 
+    let theMqSchema;
+    let testRecordSet;
+    before(function(){
+        theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
+        testRecordSet = CommonTestDependencies.testRecordSet;
 
-    {
-        findObj: {},
-        desc:`Empty search criteria should reject with 'EmptyFindCriteria'`,
-        expectedTo:rejectedPromise,
-        respCode:'EmptyFindCriteria'
-    },
-    {
-        findObj: undefined,
-        desc:`Undefined search criteria should reject with 'EmptyFindCriteria'`,
-        expectedTo:rejectedPromise,
-        respCode:'EmptyFindCriteria'
-    }
-
-];
-before(function(){
-    theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    testRecordSet = CommonTestDependencies.testRecordSet;
-
-})
-
-    //mundane test-cases 
-    mundaneTestCases.forEach(testCase=>{
-        it(testCase.desc, function (done) {
-            //const theMqSchema = common.theMqSchema;
-            //const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-
-            testCase.expectedTo(
-                theMqSchema.doFindMany( testCase.findObj,
-                                        useDefaultProjection,
-                                        limitOverride),
-                        testCase.respCode,
-                        done
-            );
-        });
-    });    
-
-    it("Expect actual projection to be specified project plus system paths ", function (done) {
-        // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-        // const testRecordSet = CommonTestDependencies.testRecordSet;
+    })
+    it(`Should resolve to MonqadeResponse containing documents with length greater than 0 - 
+                control test all is working  `, function (done) {
 
         const findObject = testRecordSet.pop();  // should be at least one of these
+        theMqSchema.doFindMany(findObject)
+        .then(mqSearchResponse => {  
+            expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
+            expect(mqSearchResponse.documents).to.be.an('array');
+            expect(mqSearchResponse.documents.length).to.be.greaterThan(0);
+            done();
+    
+        }).catch(mqError=>{
+            expect(mqError).to.be.null;
+            done(); 
 
-        const projection = theMqSchema.getPathNamesQuery({isSystem:false}).slice(0,1); // only need one path name
+        }).catch(otherError=>{
+            done(otherError);
+
+        });
+    });
+   
+    it(`Should reject with 'EmptyFindCriteria' when finding undefined search criteria` , (done)=>{
+        const findObject = undefined;
+        theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
+        .then(mqSearchResponse=>{
+            expect(mqSearchResponse).to.be.null;
+            done();
+    
+        }).catch(mqError=>{
+            rejectedWithErrorCode('EmptyFindCriteria',mqError);
+            done();             
+        }).catch(otherError=>{
+            done(otherError)
+        });
+
+    })
+    it(`Should reject with 'EmptyFindCriteria' when searching for createdAt only` , (done)=>{
+        const findObject = {createdAt:{$gte:new Date()}};
+        theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
+        .then(mqSearchResponse=>{
+            expect(mqSearchResponse).to.be.null;
+            done();
+    
+        }).catch(mqError=>{
+            rejectedWithErrorCode('EmptyFindCriteria',mqError);
+            done();             
+        }).catch(otherError=>{
+            done(otherError)
+        });
+
+    })
+
+    it(`Should reject with 'EmptyFindCriteria' when finding empty search criteria` , (done)=>{
+        const findObject ={}
+        theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
+        .then(mqSearchResponse=>{
+            expect(mqSearchResponse).to.be.null;
+            done();
+    
+        }).catch(mqError=>{
+            rejectedWithErrorCode('EmptyFindCriteria',mqError);
+            done();             
+
+        }).catch(otherError=>{
+            done(otherError)
+
+        });
+
+    })
+
+    it("Expect actual projection to be specified project plus system paths ", function (done) {
+
+        const findObject = testRecordSet.pop();  // should be at least one of these
+        const projection  = theMqSchema.getPathNamesQuery({isProjectable:false}); // only need one path name
+
+        expect(projection.length,'need test non-projectables are being returned').to.be.above(0);
 
         theMqSchema.doFindMany(findObject,projection,limitOverride)
-        .then(mqSearchResponse=>{  // is the projection what is expected.
+        .then(mqSearchResponse => {  
             expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
             expect(mqSearchResponse.documents).to.be.an('array');
 
-            const expectedProjection = projection.concat(theMqSchema.getPathNamesSystem());
             const actualProjection = Object.keys( mqSearchResponse.documents[0]);
-
+            const expectedProjection = [...new Set(projection.concat(theMqSchema.getPathNamesSystem()))];
+                                        // potential duplicate with systemPaths -- using Set(...) to remove duplicates
 
             expect(expectedProjection).to.have.members(actualProjection );
             expect(actualProjection ).to.have.members(expectedProjection);
@@ -126,7 +120,6 @@ before(function(){
             done();
     
         }).catch(mqError=>{
-            console.log(mqError);
             expect(mqError).to.be.null;
             done(); 
 
@@ -136,9 +129,7 @@ before(function(){
         });
     });
 
-    it("Quietly disregard non-paths ", function (done) {
-        // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-        // const testRecordSet = CommonTestDependencies.testRecordSet;
+    it("Should accept/ignore/disregard non-paths in findCriteria - no error ", function (done) {
 
         const findObject =testRecordSet.pop(); 
         findObject['notRealPath'] = 'notRealValue'
@@ -157,13 +148,24 @@ before(function(){
 
         });
     });
+    it(`Should reject with  EmptyFindCriteria' when findCriteria includes only createdAt `, (done)=>{
+        const findObject ={createdAt:new Date()}
+        theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
+        .then(mqSearchResponse => {
+            expect(mqSearchResponse).to.be.null;
+            done();
+    
+        }).catch(mqError => {
+            rejectedWithErrorCode('EmptyFindCriteria',mqError);
+            done();             
 
-    it.skip("Mongoose Validation Error test.  - debug see test documentation  ", function (done) {
-        // to make a dynamic test (derived from schema) to fail validation (also dynimic)
-        // is beyond scope of this project.. At this time simply catching 'validation' or other 
-        // and passing them along. 
-//        const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-//        const theMqSchema = common.theMqSchema;
+        }).catch(otherError => {
+            done(otherError);
+
+        });
+
+    })
+    it("Should reject with 'MongooseOtherError' when Mongoose throws validation errors ", function (done) {
 
         const findObject ={idxBucket:Date()}     
         theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
@@ -172,42 +174,36 @@ before(function(){
             done();
     
         }).catch(mqError=>{
-            expect(mqError).to.not.be.null;
-            if( ! MonqadeError.isThisOne(mqError)){
-                throw(mqError);
-            }
-            expect(mqError).to.be.an.instanceof(MonqadeError);
-            expect(mqError.code).to.eq('MongooseOtherError');  
- 
+            rejectedWithErrorCode('MongooseOtherError',mqError);
+            done();
+
         }).catch(otherError=>{
             done(otherError);
 
         });
     });
 
-    it.skip("restrictive search findMany will quietly disregard paths marked isSearchable='false' ", function (done) {
-        // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-        // const testRecordSet = CommonTestDependencies.testRecordSet;
-  
+    it("Should be able to search searchable and non-searchable (doFindMany feature) ", function (done) {
         const testRecord =testRecordSet.pop();
-        const searchCriteria =makeSearchCriteria(testRecordSet.pop(), theMqSchema);    
 
+        // make non-searchable findCriteria
         const nonSearchPathID = theMqSchema.getPathNamesQuery({isSearchable:false}).pop()
         const nonSearchable = {};
         nonSearchable[nonSearchPathID] =testRecord[nonSearchPathID];
 
+        // make searchable findCriteria
+        const searchCriteria =makeSearchCriteria(testRecordSet.pop(), theMqSchema);    
         const searchable = {};
         searchable[searchCriteria.pathID] = searchCriteria.value;
         
-        const findObject =Object.assign({},searchable,nonSearchable);
-
-
+        
+        const findObject =Object.assign({}, searchable, nonSearchable);
 
         theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
         .then(mqSearchResponse=>{
             expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
-            expect(mqSearchResponse.appliedQuery,' appliedQuery should NOT include.').to.not.include(nonSearchable)
-            expect(mqSearchResponse.appliedQuery, ' appliedQuery should include.').to.include(searchable)
+            expect(mqSearchResponse.appliedQuery, 'should include non-searchable paths ').to.include(nonSearchable)
+            expect(mqSearchResponse.appliedQuery,'should include searchable paths ').to.include(searchable)
             done();
     
         }).catch(mqError=>{
@@ -216,51 +212,151 @@ before(function(){
 
         }).catch(otherError=>{
             done(otherError);
-
         });
     });
-    it("non-restrictive search findMany will search paths marked isSearchable='false' ", function (done) {
-        // this is opposed to being restrictive and disregarding findObjects with paths isSearchable false;
-        // eg: ignore the rule (non-restrictive) or enforce the rule on the input parameter (restrictive).
-        // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-        // const testRecordSet = CommonTestDependencies.testRecordSet;
+    });//describe( doFindMany ... )
 
-        theMqSchema.useRestrictiveSearch=false;
+    describe('.doFindManyCount', () => {
+        let theMqSchema;
+        let testRecordSet;
+        before(function(){
+            theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
+            testRecordSet = CommonTestDependencies.testRecordSet;
+    
+        })
+    
+        it("Should reject with 'EmptyFindCriteria' if no find paths, or createdAt only ", function (done) {
 
-        //------------------------------
-        const testRecord =testRecordSet.pop();
-        const searchCriteria =makeSearchCriteria(testRecordSet.pop(), theMqSchema);    
-
-        const nonSearchPathID = theMqSchema.getPathNamesQuery({isSearchable:false}).pop()
-        const nonSearchable = {};
-        nonSearchable[nonSearchPathID] =testRecord[nonSearchPathID];
-
-        const searchable = {};
-        searchable[searchCriteria.pathID] = searchCriteria.value;
+            theMqSchema.doFindManyCount({createdAt:{$gte:'1970-01-01T00:00:00Z'}})
+            .then(mqSearchResponse => {
+                expect(mqSearchResponse).to.be.null;
+                done();
         
-        const findObject =Object.assign({},searchable,nonSearchable);
-
-        //-------------------------------
-
-        //const findObject ={idxBucket:2,_schemaVersionKey:'anything'}     
-        theMqSchema.doFindMany(findObject,useDefaultProjection,limitOverride)
-        .then(mqSearchResponse=>{
-            expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
-
-            expect(mqSearchResponse.appliedQuery, 'non-restrictive appliedQuery should include non-searchables ').to.include(nonSearchable)
-            expect(mqSearchResponse.appliedQuery,'appliedQuery ').to.include(searchable)
-            done();
-    
-        }).catch(mqError=>{
-            if( mqError.constructor.name !== 'MonqadeError' ){
-                throw(mqError);
-            }
-    
-            expect(mqError).to.be.null;
-            done(); 
-
-        }).catch(otherError=>{
-            done(otherError);
-
+            }).catch(mqError => {
+                rejectedWithErrorCode('EmptyFindCriteria',mqError);
+                done();             
+            }).catch(otherError => {
+                expect(otherError).to.be.null;
+                done(otherError);
+            });
         });
+        it("Should be greater than 1 when search non-specific document.  ", function (done) {
+            theMqSchema.doFindManyCount({idxBucket:1,createdAt:{$gte:'1970-01-01T00:00:00Z'}})
+            .then(mqSearchResponse => {  
+                expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
+                expect(mqSearchResponse.documents).to.be.an('array');
+                expect(mqSearchResponse.documents[0].count).to.be.above(1);
+                done();
+        
+            }).catch(mqError => {
+                expect(mqError).to.be.null;
+                done(); 
+    
+            }).catch(otherError=>{
+                done(otherError);
+            });
+        });
+
+        it("Should be 1 when searching for specific document ", function (done) {
+            const findObject = testRecordSet.pop();  // should be at least one of these
+            theMqSchema.doFindManyCount(findObject)
+            .then(mqSearchResponse => {  
+                expect(mqSearchResponse).to.be.an.instanceof(MonqadeResponseSearch);
+                expect(mqSearchResponse.documents).to.be.an('array');
+                expect(mqSearchResponse.documents[0].count).to.equal(1);
+                done();
+        
+            }).catch(mqError=>{
+                expect(mqError).to.be.null;
+                done(); 
+    
+            }).catch(otherError=>{
+                done(otherError);
+            });
+        });
+        it(`Should reject with 'EmptyFindCriteria' when finding undefined search criteria` , (done)=>{
+            const findObject = undefined;
+            theMqSchema.doFindManyCount(findObject,useDefaultProjection,limitOverride)
+            .then(mqSearchResponse=>{
+                expect(mqSearchResponse).to.be.null;
+                done();
+        
+            }).catch(mqError=>{
+                rejectedWithErrorCode('EmptyFindCriteria',mqError);
+                done();             
+            }).catch(otherError=>{
+                done(otherError)
+            });
+        });
+    
+    
+    }); // describe('doFindManyCount()'
+
+    //
+//            this.getMongooseModelClass().countDocuments(qry,(error,count)=>{
+describe(`Mongoose returns unanticipated error`, ()=>{
+    const schemaDefinition = CommonTestDependencies.schemaDefinition;
+    let badMongooseSchema;
+    let fakeMongoose = {   
+        set:()=>{},
+        model:()=>{return {countDocuments:(findCriteria,callback)=>{
+            callback('some error',null);
+        }}},
+        _model:{}
+    }
+    before(()=>{
+        badMongooseSchema = new CommonTestDependencies.MonqadeSchema(
+                                schemaDefinition.paths,
+                                schemaDefinition.options,
+                                fakeMongoose                
+                                );
+    
+    })
+    it(`Should reject with 'MongooseOtherError' when a encountering an unknown mongoose error`,()=>{
+        expect(badMongooseSchema).to.not.be.null;
+        const findObject = CommonTestDependencies.testRecordSet.pop(); 
+        badMongooseSchema.doFindManyCount(findObject)
+            .then(mqResponse=>{
+                expect(mqResponse).to.be.null;
+
+            })
+            .catch(mqError=>{
+                rejectedWithErrorCode('MongooseOtherError',mqError);
+                expect(mqError).to.not.be.null;
+            });
     });
+})
+describe(`Mongoose returns unanticipated error`, ()=>{
+    const schemaDefinition = CommonTestDependencies.schemaDefinition;
+    let badMongooseSchema;
+    let fakeMongoose = {   
+        set:()=>{},
+        model:()=>{return {countDocuments:(findCriteria,callback)=>{
+            callback({error:'some error',name:'ValidationError'},null);
+        }}},
+        _model:{}
+    }
+    before(()=>{
+        badMongooseSchema = new CommonTestDependencies.MonqadeSchema(
+                                schemaDefinition.paths,
+                                schemaDefinition.options,
+                                fakeMongoose                
+                                );
+    
+    })
+    it(`Should reject with 'MongooseValidationError' when a encountering an unknown mongoose error`,()=>{
+        expect(badMongooseSchema).to.not.be.null;
+        const findObject = CommonTestDependencies.testRecordSet.pop(); 
+        badMongooseSchema.doFindManyCount(findObject)
+            .then(mqResponse=>{
+                expect(mqResponse).to.be.null;
+
+            })
+            .catch(mqError=>{
+                rejectedWithErrorCode('MongooseValidationError',mqError);
+                expect(mqError).to.not.be.null;
+            });
+    });
+})
+    
+    

@@ -1,11 +1,18 @@
-const  CommonTestDependencies = require("../common").CommonTestDependencies;
-const resolvedAsExpected = CommonTestDependencies.resolvedAsExpected;
-const rejectedWithErrorCode = CommonTestDependencies.rejectedWithErrorCode;
-const skipThisTest = CommonTestDependencies.rejectedWithErrorCode;
+"use strict";
+/* cSpell:ignore monqade */
 
 const chai = require("chai");
-expect = chai.expect;
+const expect = chai.expect;
 
+const CommonTestDependencies = require("../common");
+const resolvedAsExpected = CommonTestDependencies.resolvedAsExpected;
+const rejectedWithErrorCode = CommonTestDependencies.rejectedWithErrorCode;
+const mongoose =  CommonTestDependencies.mongoose;
+
+const skipThisTest = CommonTestDependencies.rejectedWithErrorCode;
+
+
+let theMqSchema, testRecordSet;  
 before(function(){
     theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
     testRecordSet = CommonTestDependencies.testRecordSet;
@@ -13,16 +20,13 @@ before(function(){
 })
 
 
-it("Inserting self generated test record should result in 'MonqadeResponse' ", function (done) {
-    // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    //const theMqSchema = common.theMqSchema;
-
+it("Verify works as expected. Inserting self generated test record should result in 'MonqadeResponse' ", function (done) {
     theMqSchema.doInsertOne(theMqSchema.createTestDocumentForInsert())
-    .then(mqResponse=>{ //MonqadeResponse
+    .then(mqResponse => { //MonqadeResponse
         resolvedAsExpected(mqResponse);
         done();
 
-    }).catch(mqError=>{ //MonqadeError
+    }).catch(mqError => { //MonqadeError
         expect(mqError).to.be.null;
         done(mqError); 
     }).catch(otherError=>{
@@ -30,70 +34,128 @@ it("Inserting self generated test record should result in 'MonqadeResponse' ", f
     })
 });
 
-it("Insert empty record should reject MonqadeError.errorCode = 'EmptyCandidateDoc' ", function (done) {
-    // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    //const theMqSchema = common.theMqSchema;
+it("Should reject with 'InsertSystemPathsForbidden' when attempting to insert system paths  ", function (done) {
+    const testDoc = theMqSchema.createTestDocument();
+    testDoc['createdAt'] = new Date();
+    testDoc['updatedAt'] = new Date();
+    testDoc['_id'] =  mongoose.Types.ObjectId();
+    testDoc['_schemaVersionKey'] = 'not_real_key';
 
-    theMqSchema.doInsertOne({})
-    .then(mqResponse=>{ //MonqadeResponse
+
+    theMqSchema.doInsertOne(testDoc)
+    .then(mqResponse => { //MonqadeResponse
         expect(mqResponse).to.be.null;
         done();
 
-    }).catch(mqError=>{ //MonqadeError
+    }).catch(mqError => { //MonqadeError
+        rejectedWithErrorCode('InsertSystemPathsForbidden',mqError);
+        done()
+
+    }).catch(unknownError => {
+        done(unknownError)
+    })
+});
+it("Should set to default value (defined in Schema) when isInsertable=false and default is defined  ", function (done) {
+    const testDoc = theMqSchema.createTestDocumentForInsert();
+    testDoc['memberSinceDate'] = new Date('1974-06-29T01:30:00Z');
+
+
+    theMqSchema.doInsertOne(testDoc)
+    .then(mqResponse => { //MonqadeResponse
+        resolvedAsExpected(mqResponse);
+        const newDoc = mqResponse.documents[0];
+        expect(newDoc['memberSinceDate']).to.not.equal(testDoc['memberSinceDate'])
+        expect(newDoc['memberSinceDate']).to.not.be.undefined;
+        expect(newDoc['memberSinceDate']).to.not.be.null;
+        done();
+
+    }).catch(mqError => { //MonqadeError
+        expect(mqError).to.be.null;
+        done(mqError); 
+
+    }).catch(otherError=>{
+        console.log("Caught Other Error:",otherError);
+        done(otherError);
+
+    });
+});
+
+
+it("Should reject with 'InsertSystemPathsForbidden' when attempting insert _id. ", function (done) {
+    const testDoc =theMqSchema.createTestDocumentForInsert();
+    testDoc['_id'] = mongoose.Types.ObjectId();
+    theMqSchema.doInsertOne(testDoc)
+    .then(mqResponse => { //MonqadeResponse
+        expect(mqResponse).to.be.null;
+        done();
+
+    }).catch(mqError => { //MonqadeError
+        rejectedWithErrorCode('InsertSystemPathsForbidden',mqError);
+        done()
+
+    }).catch(unknownError => {
+        done(unknownError)
+    })
+
+});
+
+it("Should reject with 'EmptyCandidateDoc' when attempted in insert empty document ", function (done) {
+
+    theMqSchema.doInsertOne({})
+    .then(mqResponse => { //MonqadeResponse
+        expect(mqResponse).to.be.null;
+        done();
+
+    }).catch(mqError => { //MonqadeError
         rejectedWithErrorCode('EmptyCandidateDoc',mqError);
         done()
 
     }).catch(otherError=>{
         done(otherError)
-    })
+
+    });
 });
 
-it("Insert document missing required paths should reject MonqadeError.errorCode = 'EmptyCandidateDoc' ", function (done) {
-    // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    //const theMqSchema = common.theMqSchema;
+
+it("Should reject with 'MongooseValidationError' when missing required paths", function (done) {
 
     const testRecord = theMqSchema.createTestDocumentForInsert();
     const requiredPaths = theMqSchema.getPathNamesRequired();
 
-    if ( requiredPaths.length == 0){
-        skipThisTest.call(this,`'Skipping.. Schema has no required fields.' `)
-    }
+    expect(requiredPaths.length,'schema required paths necessary for this test').to.be.above(0);
 
     requiredPaths.forEach(pathID=>{
         delete  testRecord[pathID];
     })
 
     theMqSchema.doInsertOne(testRecord)
-    .then(mqResponse=>{ //MonqadeResponse
+    .then(mqResponse => { //MonqadeResponse
         expect(mqResponse).to.be.null;
         done();
 
-    }).catch(mqError=>{ //MonqadeError
+    }).catch(mqError => { //MonqadeError
         rejectedWithErrorCode('MongooseValidationError',mqError);
         done()
 
-    }).catch(unknownError=>{
+    }).catch(unknownError => {
         done(unknownError)
     })
 });
 
 it("Should quietly disregard paths not defined in original schema. ", function (done) {
-    // const theMqSchema = CommonTestDependencies.theMqSchema; // scoping issues require this is done inside 'it'
-    //const theMqSchema = common.theMqSchema;
 
     const theTestRecord = theMqSchema.createTestDocumentForInsert();
     const fakePathName = 'myFakePath' + Math.floor(100000 * Math.random());
     theTestRecord[fakePathName] =  Math.floor(100000 * Math.random());
 
     theMqSchema.doInsertOne(theTestRecord)
-    .then(mqResponse=>{ //MonqadeResponse
-
+    .then(mqResponse => { //MonqadeResponse
         resolvedAsExpected(mqResponse);
         const newDocument = mqResponse.documents[0];
         expect(newDocument[fakePathName],`Fake path: '${fakePathName}' was inserted`).to.be.undefined;
         done();
 
-    }).catch(mqError=>{ //MonqadeError
+    }).catch(mqError => { //MonqadeError
         expect(mqError,' Did not expect an error').to.be.null;
         done(mqError); 
 
@@ -121,7 +183,7 @@ it.skip("test is a bit goofy- insertable=false, required or not, default or not?
 
 
     theMqSchema.doInsertOne(theTestRecord)
-    .then(mqResponse=>{ //MonqadeResponse
+    .then(mqResponse => { //MonqadeResponse
 
         resolvedAsExpected(mqResponse);
         const newDocument = mqResponse.documents[0];
@@ -135,7 +197,7 @@ it.skip("test is a bit goofy- insertable=false, required or not, default or not?
 
         done();
 
-    }).catch(mqError=>{ //MonqadeError
+    }).catch(mqError => { //MonqadeError
         //expect(mqError,' Did not expect an error').to.be.null;
         done(mqError); 
 
