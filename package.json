@@ -17,7 +17,8 @@
   "devDependencies": {
     "md5": "^2.2.1",
     "mocha": "^5.2.0",
-    "monqade-query-builder": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/query-builder.git",
+    "monqade-dev-schemas": "^1.0.1",
+    "monqade-query-builder": "^1.0.1",
     "tmc-debug-function-timer": "^1.0.1"
   },
   "scripts": {
@@ -27,12 +28,12 @@
     "coverage": "nyc npm run test"
   },
   "nyc": {
-    "include": "src", 
-    "exclude": "environment" 
+    "include": "src",
+    "exclude": "environment"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-schema.git"
+    "url": "https://github.com/terary/monqade-schema.git"
   },
   "author": "Terary",
   "license": "MIT"
