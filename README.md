@@ -5,7 +5,8 @@
   [![MIT License][mitlicense-image]][mitlicense-url]
 
 # Monqade Schema #
-#####The Mongooose/MongoDB interface#### 
+
+##### The Mongooose/MongoDB interface
 Fundamental component of the [Monqade Project](http://monqade.com/ "Monqade Project")
 A facade class for Mongoose - with some extras.
 
