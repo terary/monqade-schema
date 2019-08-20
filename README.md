@@ -5,7 +5,8 @@
   [![MIT License][mitlicense-image]][mitlicense-url]
   [![Linux Build][travis-image]][travis-url]
   [![Windows Build][appveyor-image]][appveyor-url]
-
+  [![Test Coverage][coveralls-image]][coveralls-url]
+  
 # Monqade Schema #
 
 ##### The Mongooose/MongoDB interface
@@ -66,7 +67,6 @@ https://pandao.github.io/editor.md/en.html
 
 [appveyor-image]: https://img.shields.io/appveyor/ci/terary/monqade-schema/master.svg?label=windows
 [appveyor-url]: https://ci.appveyor.com/project/terary/monqade-schema/branch/master
-
 
 [coveralls-image]: https://coveralls.io/repos/github/terary/monqade-schema/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/terary/monqade-schema?branch=master

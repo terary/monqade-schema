@@ -1,6 +1,7 @@
 # Test against the latest version of this Node.js version
 environment:
   nodejs_version: "10"
+  MONQADE_RUNTIME: travis
 
 services:
   - mongodb
